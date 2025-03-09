@@ -143,4 +143,14 @@ export interface NavigationItem {
    * Children of the navigation item
    */
   children?: NavigationItem[];
+
+  /**
+   * Position for sorting (lower numbers appear first)
+   */
+  position?: number;
+
+  /**
+   * Whether the section is collapsed by default
+   */
+  collapsed?: boolean;
 } 

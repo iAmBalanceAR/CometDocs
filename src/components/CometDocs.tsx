@@ -4,6 +4,8 @@ import React from 'react';
 import { CometDocsProps } from '../types';
 import { getCometDocsConfig } from '../utils/config';
 import { DocMetadata, loadDocBySlug } from '../utils/docs';
+import { loadNavigation } from '../utils/navigation';
+import { NavigationItem } from '../types/config';
 import Layout from './Layout';
 import '../styles/cometdocs.css';
 
@@ -22,6 +24,7 @@ export const CometDocs: React.FC<CometDocsProps> = ({
   const [error, setError] = React.useState<string | null>(null);
   const [metadata, setMetadata] = React.useState<DocMetadata | null>(null);
   const [content, setContent] = React.useState<string>('');
+  const [navigation, setNavigation] = React.useState<NavigationItem[]>([]);
   
   // Get the configuration - memoize to prevent infinite loops
   const config = React.useMemo(() => getCometDocsConfig(customConfig), [customConfig]);
@@ -36,6 +39,40 @@ export const CometDocs: React.FC<CometDocsProps> = ({
     Array.isArray(slug) ? slug.join('/') : (slug || 'index'),
     [slug]
   );
+  
+  // Current path for active navigation item
+  const currentPath = React.useMemo(() => 
+    `${config.advanced.basePath}/${formattedSlug}`,
+    [config.advanced.basePath, formattedSlug]
+  );
+  
+  // Load navigation data
+  React.useEffect(() => {
+    let isMounted = true;
+    
+    async function loadNavigationData() {
+      if (!isMounted) return;
+      
+      try {
+        const navItems = await loadNavigation(config);
+        
+        if (!isMounted) return;
+        
+        setNavigation(navItems);
+      } catch (err) {
+        if (!isMounted) return;
+        
+        console.error('Error loading navigation:', err);
+      }
+    }
+    
+    loadNavigationData();
+    
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
+  }, [config]);
   
   // Load document data
   React.useEffect(() => {
@@ -91,7 +128,7 @@ export const CometDocs: React.FC<CometDocsProps> = ({
   // Show loading state
   if (loading) {
     return (
-      <components.Layout>
+      <components.Layout navigation={navigation} currentPath={currentPath}>
         <div className="cometdocs-loading">Loading...</div>
       </components.Layout>
     );
@@ -100,7 +137,7 @@ export const CometDocs: React.FC<CometDocsProps> = ({
   // Show error state
   if (error) {
     return (
-      <components.Layout>
+      <components.Layout navigation={navigation} currentPath={currentPath}>
         <div className="cometdocs-error">
           <h2>Error</h2>
           <p>{error}</p>
@@ -111,7 +148,11 @@ export const CometDocs: React.FC<CometDocsProps> = ({
   
   // Show content
   return (
-    <components.Layout metadata={metadata || undefined}>
+    <components.Layout 
+      metadata={metadata || undefined} 
+      navigation={navigation} 
+      currentPath={currentPath}
+    >
       {renderedContent || (
         <div className="cometdocs-error">
           <h2>Document Not Found</h2>

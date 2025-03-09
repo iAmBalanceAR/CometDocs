@@ -1,5 +1,9 @@
 import { CometDocsConfig } from '../types/config';
 import { Doc, DocMetadata, generateTableOfContents } from './docs';
+import { getNavigation } from './navigation';
+
+// Re-export the navigation function for server components
+export { getNavigation };
 
 /**
  * Get a document by slug
@@ -47,6 +51,7 @@ export async function getDocBySlug(
           slug,
           locale: docLocale,
           path: mdxPath,
+          title: data.title || slug,
         };
         
         const toc = generateTableOfContents(content);
@@ -71,6 +76,7 @@ export async function getDocBySlug(
       slug,
       locale: docLocale,
       path: docPath,
+      title: data.title || slug,
     };
     
     const toc = generateTableOfContents(content);
@@ -142,6 +148,7 @@ export async function getAllDocs(
           slug,
           locale: docLocale,
           path: filePath,
+          title: data.title || slug,
         };
         
         const toc = generateTableOfContents(content);
