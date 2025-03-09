@@ -1,0 +1,65 @@
+{
+  "name": "cometdocs",
+  "version": "0.1.0",
+  "description": "A lightweight, zero-config documentation system for Next.js applications",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "nextjs",
+    "documentation",
+    "markdown",
+    "docs",
+    "static-site",
+    "react"
+  ],
+  "author": "CometDocs Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cometdocs/cometdocs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "next": ">=13.4.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "mdx-bundler": "^9.2.1",
+    "rehype-autolink-headings": "^6.1.1",
+    "rehype-code-titles": "^1.2.0",
+    "rehype-prism-plus": "^1.6.0",
+    "rehype-slug": "^5.1.0",
+    "remark-gfm": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.5",
+    "@types/react": "^18.2.18",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
+    "eslint": "^8.46.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-react": "^7.33.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jest": "^29.6.2",
+    "prettier": "^3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6"
+  }
+} 

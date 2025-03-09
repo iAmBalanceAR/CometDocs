@@ -1,0 +1,590 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* GitHub-inspired dark theme colors */
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --accent-primary: #58a6ff;
+  --accent-secondary: #79c0ff;
+  --accent-tertiary: #388bfd;
+  --code-bg: #1e2030;
+  --code-text: #e6edf3;
+  --border-color: #30363d;
+  --sidebar-width: 280px;
+  --header-height: 64px;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* CometDocs Styles */
+.cometdocs-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.cometdocs-header {
+  background-color: var(--bg-primary);
+  height: var(--header-height);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  width: 100%;
+}
+
+.cometdocs-header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cometdocs-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cometdocs-logo {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cometdocs-logo::before {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background-color: var(--bg-primary);
+  border-radius: 50%;
+}
+
+.cometdocs-logo::after {
+  content: "☄️";
+  position: relative;
+  font-size: 1rem;
+  z-index: 1;
+}
+
+.cometdocs-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.cometdocs-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cometdocs-layout {
+  display: flex;
+  flex: 1;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.cometdocs-sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
+  height: calc(100vh - var(--header-height));
+  position: sticky;
+  top: var(--header-height);
+  overflow-y: auto;
+  padding: 1.5rem 1rem 1.5rem 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.cometdocs-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cometdocs-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cometdocs-sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 3px;
+}
+
+.cometdocs-nav-section {
+  margin-bottom: 1.5rem;
+}
+
+.cometdocs-nav-section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.cometdocs-nav-list,
+.cometdocs-nav-sublist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cometdocs-nav-sublist {
+  margin-left: 0.75rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-left: 1px solid var(--border-color);
+  padding-left: 0.75rem;
+}
+
+.cometdocs-nav-item {
+  margin-bottom: 0.25rem;
+}
+
+.cometdocs-nav-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.cometdocs-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+.cometdocs-nav-link.active {
+  background-color: rgba(88, 166, 255, 0.1);
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.cometdocs-nav-group {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 1rem 0 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.cometdocs-main {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  max-width: calc(100% - var(--sidebar-width));
+}
+
+.cometdocs-content-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.cometdocs-content {
+  background-color: var(--bg-primary);
+  border-radius: 8px;
+  padding: 0 0 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.cometdocs-page-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.cometdocs-footer {
+  background-color: #000;
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+.cometdocs-footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  color: var(--text-secondary);
+}
+
+/* Content Styles */
+.cometdocs-content h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.cometdocs-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.5rem 0 1rem;
+  color: var(--text-primary);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cometdocs-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.75rem;
+  color: var(--text-primary);
+}
+
+.cometdocs-content p {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.cometdocs-content a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.cometdocs-content a:hover {
+  text-decoration: underline;
+}
+
+.cometdocs-content code {
+  font-family: var(--font-mono);
+  background-color: var(--code-bg);
+  color: var(--code-text);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.cometdocs-content pre {
+  background-color: var(--code-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cometdocs-content pre code {
+  padding: 0;
+  background-color: transparent;
+  color: var(--code-text);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  display: block;
+}
+
+.cometdocs-content ul,
+.cometdocs-content ol {
+  margin: 1rem 0 1rem 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+.cometdocs-content li {
+  margin-bottom: 0.5rem;
+}
+
+.cometdocs-content blockquote {
+  border-left: 4px solid var(--accent-tertiary);
+  padding: 0.75rem 1rem;
+  margin: 1.25rem 0;
+  color: var(--text-secondary);
+  background-color: rgba(88, 166, 255, 0.05);
+  border-radius: 0 4px 4px 0;
+}
+
+.cometdocs-content hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 2rem 0;
+}
+
+.cometdocs-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9375rem;
+}
+
+.cometdocs-content th,
+.cometdocs-content td {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+}
+
+.cometdocs-content th {
+  background-color: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  text-align: left;
+}
+
+.cometdocs-loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cometdocs-loading::before {
+  content: "";
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cometdocs-error {
+  padding: 2rem;
+  text-align: center;
+  color: #f85149;
+  background-color: rgba(248, 81, 73, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(248, 81, 73, 0.2);
+}
+
+/* Home page styles */
+.cometdocs-home {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.cometdocs-home-hero {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.cometdocs-home-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+.cometdocs-home-subtitle {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.cometdocs-home-cta {
+  display: inline-block;
+  background-color: var(--accent-primary);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.cometdocs-home-cta:hover {
+  background-color: var(--accent-tertiary);
+}
+
+.cometdocs-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 4rem 0;
+}
+
+.cometdocs-feature-card {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cometdocs-feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.cometdocs-feature-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--accent-primary);
+}
+
+.cometdocs-feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.cometdocs-feature-description {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* Mobile menu button */
+.cometdocs-mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .cometdocs-main {
+    max-width: 100%;
+  }
+  
+  .cometdocs-mobile-menu-button {
+    display: block;
+  }
+  
+  .cometdocs-sidebar {
+    position: fixed;
+    left: -100%;
+    top: var(--header-height);
+    transition: left 0.3s ease;
+    z-index: 30;
+    background-color: var(--bg-secondary);
+    width: 280px;
+  }
+  
+  .cometdocs-sidebar.open {
+    left: 0;
+  }
+  
+  .cometdocs-home-title {
+    font-size: 2.5rem;
+  }
+  
+  .cometdocs-home-subtitle {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cometdocs-header-content {
+    padding: 0 1rem;
+  }
+  
+  .cometdocs-main {
+    padding: 1.5rem 1rem;
+  }
+  
+  .cometdocs-page-title {
+    font-size: 1.75rem;
+  }
+  
+  .cometdocs-content h1 {
+    font-size: 1.5rem;
+  }
+  
+  .cometdocs-content h2 {
+    font-size: 1.25rem;
+  }
+  
+  .cometdocs-content h3 {
+    font-size: 1.125rem;
+  }
+  
+  .cometdocs-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cometdocs-home-logo {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  margin: 0 auto 2rem;
+}
+
+.cometdocs-home-logo::before {
+  content: "";
+  position: absolute;
+  width: 105px;
+  height: 105px;
+  background-color: var(--bg-primary);
+  border-radius: 50%;
+}
+
+.cometdocs-home-logo::after {
+  content: "☄️";
+  position: relative;
+  font-size: 3rem;
+  z-index: 1;
+} 

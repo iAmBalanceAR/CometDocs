@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CometDocs Concept</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #60a5fa;
+            --accent-tertiary: #2563eb;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+            --border-color: #334155;
+            --font-mono: 'Fira Code', 'Roboto Mono', monospace;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comet-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.2;
+            background: radial-gradient(circle at 70% 20%, var(--accent-primary) 0%, transparent 50%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+            color: var(--accent-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo::before {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background-color: var(--bg-primary);
+            border-radius: 50%;
+        }
+
+        .logo::after {
+            content: "☄️";
+            position: relative;
+            font-size: 5rem;
+            z-index: 1;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        pre code {
+            padding: 0;
+            background-color: transparent;
+            color: var(--code-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: var(--accent-secondary);
+            font-weight: bold;
+        }
+
+        .conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .message {
+            padding: 1.5rem;
+            border-radius: 8px;
+            max-width: 90%;
+        }
+
+        .user {
+            align-self: flex-end;
+            background-color: var(--accent-tertiary);
+            color: white;
+            border-radius: 18px 18px 4px 18px;
+        }
+
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 18px 18px 18px 4px;
+        }
+
+        .diagram {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .diagram pre {
+            margin: 0;
+            white-space: pre;
+            font-family: var(--font-mono);
+            line-height: 1.2;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-primary);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .cta {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-tertiary));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .message {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="comet-animation"></div>
+        <div class="header-content">
+            <h1>CometDocs</h1>
+            <p class="tagline">Documentation that doesn't make you extinct.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo"></div>
+        </div>
+
+        <div class="section">
+            <h2>The Vision</h2>
+            <p>CometDocs is a lightweight, zero-config documentation system for Next.js applications. It's designed to be simple, intuitive, and to get out of your way so you can focus on writing great documentation.</p>
+            
+            <p>Unlike other documentation frameworks that force you to create and maintain a separate codebase, CometDocs integrates seamlessly with your existing Next.js application. No separate deployment, no complex setup, no fighting with styles.</p>
+            
+            <div class="cta">
+                <button class="btn">pnpm add cometdocs</button>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3 class="feature-title">Zero Configuration</h3>
+                <p>Works out of the box with sensible defaults. Just add markdown files to your /docs folder and they appear.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3 class="feature-title">Seamless Integration</h3>
+                <p>Lives within your existing Next.js app, sharing the same styling system and infrastructure.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💸</div>
+                <h3 class="feature-title">No Infrastructure Overhead</h3>
+                <p>No separate database, auth system, or deployment pipeline. Uses your existing setup.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📁</div>
+                <h3 class="feature-title">File-Based</h3>
+                <p>Just drop markdown files in a /docs folder and they appear. Simple and intuitive.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">Theme Inheritance</h3>
+                <p>Automatically uses your existing Next.js theme/styles for a consistent look and feel.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🛠️</div>
+                <h3 class="feature-title">Simple Customization</h3>
+                <p>Easy overrides without fighting the system. Customize only what you need.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Project Structure</h2>
+            <p>CometDocs is designed to keep your documentation separate from your application code while still leveraging your existing Next.js infrastructure.</p>
+            
+            <div class="diagram">
+                <pre>
+your-nextjs-project/
+├── app/                  # Your main Next.js app
+├── components/           # Shared components
+├── docs/                 # CometDocs content lives here
+│   ├── getting-started/
+│   ├── api-reference/
+│   ├── tutorials/
+│   └── _meta.json        # Navigation/structure config
+├── public/
+└── package.json
+                </pre>
+            </div>
+            
+            <p>This approach has several advantages:</p>
+            <ul>
+                <li><strong>Clean Separation</strong> - Documentation lives in its own directory, not mixed with your app code</li>
+                <li><strong>No App Router Conflicts</strong> - Avoids any potential routing conflicts with your main app</li>
+                <li><strong>Independent Development</strong> - Docs can be updated without touching app code</li>
+                <li><strong>Simple Mental Model</strong> - "Docs live in /docs" - intuitive for any developer joining the project</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Configuration</h2>
+            <p>CometDocs uses a simple, WordPress-style configuration file that controls all aspects of your documentation system.</p>
+            
+            <pre><code>// cometdocs.config.js
+module.exports = {
+  // Content configuration
+  content: {
+    dir: './docs',
+    defaultLocale: 'en',
+  },
+  
+  // Theme configuration
+  theme: {
+    // Auto-inherit from your app's theme
+    inherit: true,
+    
+    // Override or extend with docs-specific theming
+    colors: {
+      // Use your app's colors by default
+      // These can be overridden here
+      primary: '#3490dc', // Only used if not inheriting
+    },
+    
+    // Layout options
+    layout: 'sidebar', // or 'full', 'minimal', etc.
+    
+    // Dark mode
+    darkMode: 'system', // or 'light', 'dark', 'toggle'
+  },
+  
+  // Navigation
+  navigation: {
+    auto: true, // Auto-generate from file structure
+    // Or define custom navigation
+  },
+  
+  // Advanced options
+  advanced: {
+    basePath: '/docs',
+    search: {
+      enabled: true,
+      type: 'local', // No external services needed
+    },
+    codeHighlighting: true,
+  }
+}</code></pre>
+            
+            <p>This configuration gives you:</p>
+            <ul>
+                <li><strong>Shared Infrastructure</strong> - Same Next.js instance, same Tailwind config, same packages</li>
+                <li><strong>Clean Separation</strong> - Docs content lives entirely in `/docs`</li>
+                <li><strong>Consistent Theming</strong> - Automatically inherits your app's design system</li>
+                <li><strong>Simple Configuration</strong> - One file controls everything</li>
+                <li><strong>No App Interference</strong> - Doesn't touch your main app code</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Key Advantages</h2>
+            
+            <h3>1. Simplicity</h3>
+            <p>CometDocs is designed to be simple and intuitive. No complex setup, no separate deployment, no fighting with styles. Just add markdown files to your /docs folder and they appear.</p>
+            
+            <h3>2. Integration</h3>
+            <p>Unlike other documentation frameworks that force you to create and maintain a separate codebase, CometDocs integrates seamlessly with your existing Next.js application.</p>
+            
+            <h3>3. Performance</h3>
+            <p>CometDocs is built on Next.js, which means it's blazing fast both in development and production. No separate build process, no additional overhead.</p>
+            
+            <h3>4. Customization</h3>
+            <p>CometDocs is designed to be customizable without being complex. You can override only what you need while keeping the rest of the system simple and intuitive.</p>
+            
+            <h3>5. Open Source</h3>
+            <p>CometDocs is fully open source and designed for transparency and hackability. You can take what you need, leave what you don't, and customize it to your heart's content.</p>
+        </div>
+
+        <div class="section">
+            <h2>Architecture</h2>
+            <p>CometDocs is designed with a modular architecture that makes it easy to customize and extend.</p>
+            
+            <div class="diagram">
+                <pre>
+cometdocs/
+├── core/                 # Core rendering engine
+├── components/           # UI components (easily swappable)
+│   ├── Navigation.tsx
+│   ├── CodeBlock.tsx
+│   └── ...
+├── hooks/                # React hooks for docs functionality
+├── utils/                # Utility functions
+└── themes/               # Optional pre-built themes
+                </pre>
+            </div>
+            
+            <p>Everything is exposed and documented, so you can:</p>
+            <ul>
+                <li>Replace the navigation component with your own</li>
+                <li>Add custom rendering for specific content types</li>
+                <li>Integrate with your own search implementation</li>
+                <li>Add your own plugins or extensions</li>
+            </ul>
+            
+            <p>This is the opposite of those bloated, opinionated frameworks that force you into their way of doing things. CometDocs is more like a toolkit that you can use as-is or completely customize to your needs.</p>
+        </div>
+
+        <div class="section">
+            <h2>Getting Started</h2>
+            <p>Getting started with CometDocs is as simple as:</p>
+            
+            <pre><code># Install CometDocs
+pnpm add cometdocs
+
+# Initialize your docs folder
+npx cometdocs init</code></pre>
+            
+            <p>This will create a basic structure in your project:</p>
+            
+            <div class="diagram">
+                <pre>
+docs/
+├── getting-started.md    # A sample getting started guide
+├── index.md              # Your documentation home page
+└── _meta.json            # Navigation configuration
+                </pre>
+            </div>
+            
+            <p>Your documentation will be available at <code>yourdomain.com/docs</code> immediately, with no additional configuration required.</p>
+        </div>
+
+        <div class="section">
+            <h2>Our Conversation</h2>
+            <p>This concept emerged from a conversation about the frustrations of working with existing documentation frameworks like Docusaurus. Here are some highlights from our discussion:</p>
+            
+            <div class="conversation">
+                <div class="message user">
+                    <p>It feels like you have to break it to use it.. All the !important crap to override existing styles to move an element across a container.. and at the end of the day, you and I could code this exact same system in next.js in about half an hour and build out a full admin for customization too.</p>
+                </div>
+                
+                <div class="message assistant">
+                    <p>I'm laughing because that's the perfect analogy! The terrified T-Rex looking up at the incoming Comet Docs - simple, fast, and the end of over-engineered documentation frameworks.</p>
+                    <p>A Next.js-based documentation system would be refreshingly straightforward:</p>
+                    <ol>
+                        <li>Simple, predictable component structure</li>
+                        <li>Direct CSS control without fighting the framework</li>
+                        <li>Sensible defaults that don't require hacking to override</li>
+                        <li>Actual separation of concerns instead of this tangled mess</li>
+                    </ol>
+                </div>
+                
+                <div class="message user">
+                    <p>Maybe we should, we could call it "Comet Docs" and the logo could be a huge meteor hurtling towards earth and a very scared t-rex looking up at his very simple end..</p>
+                </div>
+                
+                <div class="message assistant">
+                    <p>"Comet Docs" is brilliant - the extinction-level event for bloated documentation frameworks. The logo writes itself: a clean, fast meteor heading toward the unnecessarily complex dinosaur. Tagline: "Documentation that doesn't make you extinct."</p>
+                </div>
+                
+                <div class="message user">
+                    <p>Maybe make it a pnpm package that plugs into your existing next app and just gently creates a beautiful docs system... no tables, not database.. no permissions.. just pnpm add cometdocs and boom, a working docs system.</p>
+                </div>
+                
+                <div class="message assistant">
+                    <p>That's absolutely brilliant! A lightweight, zero-config approach is exactly what the documentation space needs.</p>
+                    <p>The key advantages would be:</p>
+                    <ol>
+                        <li><strong>Zero Configuration Required</strong> - Works out of the box with sensible defaults</li>
+                        <li><strong>Seamless Integration</strong> - Lives within your existing Next.js app, sharing the same styling system</li>
+                        <li><strong>No Infrastructure Overhead</strong> - No separate database, auth system, or deployment pipeline</li>
+                        <li><strong>File-Based</strong> - Just drop markdown files in a `/docs` folder and they appear</li>
+                        <li><strong>Theme Inheritance</strong> - Automatically uses your existing Next.js theme/styles</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h2>Ready to Simplify Your Documentation?</h2>
+            <p>CometDocs is still a concept, but the idea is clear: documentation should be simple, integrated, and get out of your way.</p>
+            <button class="btn">Star on GitHub (Coming Soon)</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>CometDocs Concept - Documentation that doesn't make you extinct.</p>
+    </footer>
+</body>
+</html>

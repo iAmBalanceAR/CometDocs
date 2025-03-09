@@ -1,0 +1,364 @@
+/* CometDocs Base Styles */
+
+/* Container */
+.cometdocs-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+.cometdocs-header {
+  background-color: #fff;
+  border-bottom: 1px solid #eaeaea;
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.cometdocs-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cometdocs-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #3490dc;
+}
+
+/* Layout */
+.cometdocs-layout {
+  display: flex;
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Sidebar */
+.cometdocs-sidebar {
+  width: 250px;
+  padding: 2rem 1rem;
+  border-right: 1px solid #eaeaea;
+  position: sticky;
+  top: 4rem;
+  height: calc(100vh - 4rem);
+  overflow-y: auto;
+}
+
+.cometdocs-nav-list,
+.cometdocs-nav-sublist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cometdocs-nav-sublist {
+  margin-left: 1rem;
+}
+
+.cometdocs-nav-item {
+  margin-bottom: 0.5rem;
+}
+
+.cometdocs-nav-link {
+  display: block;
+  padding: 0.5rem;
+  color: #4a5568;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.cometdocs-nav-link:hover {
+  background-color: #f7fafc;
+  color: #3490dc;
+}
+
+.cometdocs-nav-link.active {
+  background-color: #ebf8ff;
+  color: #3490dc;
+  font-weight: 500;
+}
+
+.cometdocs-nav-group {
+  display: block;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 1rem 0 0.5rem;
+  padding: 0.5rem;
+}
+
+/* Main Content */
+.cometdocs-main {
+  flex: 1;
+  padding: 2rem;
+}
+
+.cometdocs-content {
+  max-width: 768px;
+}
+
+.cometdocs-page-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  color: #1a202c;
+}
+
+/* Footer */
+.cometdocs-footer {
+  background-color: #f7fafc;
+  border-top: 1px solid #eaeaea;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #718096;
+}
+
+.cometdocs-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Typography */
+.cometdocs-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #1a202c;
+}
+
+.cometdocs-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #2d3748;
+}
+
+.cometdocs-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+}
+
+.cometdocs-content p {
+  margin-bottom: 1rem;
+}
+
+.cometdocs-content a {
+  color: #3490dc;
+  text-decoration: none;
+}
+
+.cometdocs-content a:hover {
+  text-decoration: underline;
+}
+
+.cometdocs-content code {
+  background-color: #f7fafc;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.cometdocs-content pre {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.cometdocs-content pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.cometdocs-content ul,
+.cometdocs-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.cometdocs-content li {
+  margin-bottom: 0.5rem;
+}
+
+.cometdocs-content blockquote {
+  border-left: 4px solid #e2e8f0;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #718096;
+}
+
+.cometdocs-content hr {
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 2rem 0;
+}
+
+.cometdocs-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.cometdocs-content th,
+.cometdocs-content td {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.cometdocs-content th {
+  background-color: #f7fafc;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Loading and Error States */
+.cometdocs-loading,
+.cometdocs-error {
+  padding: 2rem;
+  text-align: center;
+}
+
+.cometdocs-error {
+  color: #e53e3e;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .cometdocs-container {
+    color: #e2e8f0;
+    background-color: #1a202c;
+  }
+  
+  .cometdocs-header {
+    background-color: #2d3748;
+    border-bottom-color: #4a5568;
+  }
+  
+  .cometdocs-title {
+    color: #90cdf4;
+  }
+  
+  .cometdocs-sidebar {
+    border-right-color: #4a5568;
+  }
+  
+  .cometdocs-nav-link {
+    color: #cbd5e0;
+  }
+  
+  .cometdocs-nav-link:hover {
+    background-color: #2d3748;
+    color: #90cdf4;
+  }
+  
+  .cometdocs-nav-link.active {
+    background-color: #2c5282;
+    color: #90cdf4;
+  }
+  
+  .cometdocs-nav-group {
+    color: #e2e8f0;
+  }
+  
+  .cometdocs-page-title,
+  .cometdocs-content h1,
+  .cometdocs-content h2,
+  .cometdocs-content h3 {
+    color: #f7fafc;
+  }
+  
+  .cometdocs-footer {
+    background-color: #2d3748;
+    border-top-color: #4a5568;
+    color: #a0aec0;
+  }
+  
+  .cometdocs-content a {
+    color: #90cdf4;
+  }
+  
+  .cometdocs-content code {
+    background-color: #2d3748;
+    color: #e2e8f0;
+  }
+  
+  .cometdocs-content pre {
+    background-color: #1a202c;
+    color: #e2e8f0;
+  }
+  
+  .cometdocs-content blockquote {
+    border-left-color: #4a5568;
+    color: #a0aec0;
+  }
+  
+  .cometdocs-content hr {
+    border-top-color: #4a5568;
+  }
+  
+  .cometdocs-content th,
+  .cometdocs-content td {
+    border-color: #4a5568;
+  }
+  
+  .cometdocs-content th {
+    background-color: #2d3748;
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .cometdocs-layout {
+    flex-direction: column;
+  }
+  
+  .cometdocs-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid #eaeaea;
+    padding: 1rem;
+  }
+  
+  .cometdocs-main {
+    padding: 1rem;
+  }
+  
+  .cometdocs-page-title {
+    font-size: 1.75rem;
+  }
+  
+  .cometdocs-content h1 {
+    font-size: 1.5rem;
+  }
+  
+  .cometdocs-content h2 {
+    font-size: 1.25rem;
+  }
+  
+  .cometdocs-content h3 {
+    font-size: 1.125rem;
+  }
+} 
