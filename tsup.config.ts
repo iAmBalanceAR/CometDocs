@@ -1,26 +1,15 @@
-export default {
-  entry: ['src/index.ts', 'src/scripts/setup.ts'],
-  format: ['esm', 'cjs'],
+import { defineConfig } from 'tsup';
+
+export default defineConfig({
+  entry: ['src/index.ts', 'src/scripts/setup.ts', 'src/cli.ts'],
+  format: ['cjs', 'esm'],
   dts: true,
-  splitting: false,
-  sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', 'next'],
-  esbuildOptions(options: any) {
-    options.banner = {
-      js: `/**
- * CometDocs - A lightweight, zero-config documentation system for Next.js applications
- * 
- * @license MIT
- * @copyright CometDocs Team
- */`,
-    };
-  },
-  treeshake: true,
-  minify: true,
-  outDir: 'dist',
-  injectStyle: false,
-  noExternal: ['gray-matter', 'mdx-bundler', 'rehype-autolink-headings', 'rehype-code-titles', 'rehype-prism-plus', 'rehype-slug', 'remark-gfm'],
-  target: 'es2018',
   platform: 'node',
-}; 
+  target: 'node18',
+  sourcemap: true,
+  shims: true,
+  banner: {
+    js: "#!/usr/bin/env node",
+  }
+}); 

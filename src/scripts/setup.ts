@@ -1,14 +1,11 @@
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { join } from 'path';
 import * as fs from 'fs-extra';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-async function setup() {
+export async function setup() {
   try {
     // Get the installation directory (where npm install was run)
-    const installDir = process.env.INIT_CWD || process.cwd();
+    const installDir = process.cwd();
+    console.log('Setting up CometDocs in:', installDir);
     
     // Create the basic directory structure
     const directories = [
@@ -21,7 +18,9 @@ async function setup() {
     ];
 
     for (const dir of directories) {
-      await fs.ensureDir(join(installDir, dir));
+      const dirPath = join(installDir, dir);
+      console.log(`Creating directory: ${dirPath}`);
+      await fs.ensureDir(dirPath);
     }
 
     // Create the route page
@@ -32,10 +31,9 @@ export default function DocsPage({ params }: { params: { slug: string[] } }) {
   return <CometDocs slug={params.slug.join('/')} />;
 }`;
 
-    await fs.writeFile(
-      join(installDir, 'app/docs/[...slug]/page.tsx'),
-      routePage
-    );
+    const routePagePath = join(installDir, 'app/docs/[...slug]/page.tsx');
+    console.log(`Creating route page: ${routePagePath}`);
+    await fs.writeFile(routePagePath, routePage);
 
     // Create a sample documentation file
     const sampleDoc = `---
@@ -56,23 +54,29 @@ Welcome to your documentation! This is a sample page to help you get started wit
 - 🌙 **Dark Mode**
 `;
 
-    await fs.writeFile(
-      join(installDir, 'docs/en/getting-started.md'),
-      sampleDoc
-    );
+    const sampleDocPath = join(installDir, 'docs/en/getting-started.md');
+    console.log(`Creating sample doc: ${sampleDocPath}`);
+    await fs.writeFile(sampleDocPath, sampleDoc);
 
     // Create or update layout.tsx to import styles
     const layoutPath = join(installDir, 'app/layout.tsx');
+    console.log(`Checking layout file: ${layoutPath}`);
+    
     let layoutContent = '';
 
     if (await fs.pathExists(layoutPath)) {
+      console.log('Layout file exists, updating...');
       // If layout exists, add the import
       const currentLayout = await fs.readFile(layoutPath, 'utf8');
       if (!currentLayout.includes('@iambalance/cometdocs/styles.css')) {
         layoutContent = `import '@iambalance/cometdocs/styles.css';\n${currentLayout}`;
         await fs.writeFile(layoutPath, layoutContent);
+        console.log('Added styles import to existing layout');
+      } else {
+        console.log('Styles import already exists in layout');
       }
     } else {
+      console.log('Creating new layout file...');
       // Create a new layout file
       layoutContent = `import '@iambalance/cometdocs/styles.css';
 
@@ -88,9 +92,10 @@ export default function RootLayout({
   );
 }`;
       await fs.writeFile(layoutPath, layoutContent);
+      console.log('Created new layout file with styles import');
     }
 
-    console.log('✨ CometDocs project structure has been set up successfully!');
+    console.log('\n✨ CometDocs project structure has been set up successfully!');
     console.log('📝 Created:');
     console.log('  - app/docs/[...slug]/page.tsx (documentation route)');
     console.log('  - docs/en/getting-started.md (sample documentation)');
@@ -101,6 +106,4 @@ export default function RootLayout({
     console.error('Error setting up CometDocs:', error);
     process.exit(1);
   }
-}
-
-setup(); 
+} 

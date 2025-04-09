@@ -1,6 +1,6 @@
 {
   "name": "@iambalance/cometdocs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A lightweight, zero-config documentation system for Next.js applications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -14,8 +14,7 @@
     "build": "tsup",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest",
-    "prepublishOnly": "npm run build",
-    "postinstall": "node ./dist/scripts/setup.mjs"
+    "prepublishOnly": "npm run build"
   },
   "exports": {
     ".": {
