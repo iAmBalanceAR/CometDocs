@@ -11,14 +11,21 @@
     "build": "tsup",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest",
-    "prepublishOnly": "npm run build",
-    "prepare": "husky install",
-    "prepack": "npm run build",
-    "postinstall": "npm run prepare",
-    "deploy": "npm run build && npm publish",
-    "deploy:beta": "npm run build && npm publish --tag beta",
-    "deploy:canary": "npm run build && npm publish --tag canary"
+    "prepublishOnly": "npm run build"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "nextjs",
     "documentation",
@@ -33,11 +40,6 @@
     "type": "git",
     "url": "https://github.com/cometdocs/cometdocs"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
@@ -79,12 +81,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    }
   }
 } 

@@ -23,16 +23,20 @@ yarn add @iambalance/cometdocs
 pnpm add @iambalance/cometdocs
 ```
 
-## Quick Start
+## Setup
 
-1. Create a docs directory in your project root:
-
+1. Create a `docs` directory in your project root:
 ```bash
 mkdir -p docs/en
 ```
 
-2. Create your first documentation file:
+2. Add the required dependencies to your Next.js project:
+```bash
+# If you haven't already installed these
+pnpm add next@latest react@latest react-dom@latest
+```
 
+3. Create your first documentation file:
 ```bash
 # Create a getting started page
 echo "---
@@ -44,42 +48,32 @@ title: Getting Started
 Welcome to your documentation!" > docs/en/getting-started.md
 ```
 
-3. Create a page to display your documentation:
-
+4. Create a page to display your documentation:
 ```tsx
-// pages/docs/[slug].tsx
-import { GetStaticPaths, GetStaticProps } from 'next';
+// app/docs/[...slug]/page.tsx
 import { CometDocs } from '@iambalance/cometdocs';
 
-export default function DocsPage({ slug }) {
-  return <CometDocs slug={slug} />;
+export default function DocsPage({ params }: { params: { slug: string[] } }) {
+  return <CometDocs slug={params.slug.join('/')} />;
 }
-
-export const getStaticProps = async ({ params }) => {
-  return {
-    props: {
-      slug: params?.slug,
-    },
-  };
-};
-
-export const getStaticPaths = async () => {
-  return {
-    paths: [
-      { params: { slug: 'getting-started' } },
-    ],
-    fallback: 'blocking',
-  };
-};
 ```
 
-4. Start your Next.js development server:
+5. Import the styles in your root layout:
+```tsx
+// app/layout.tsx
+import '@iambalance/cometdocs/styles.css';
+```
 
+6. Start your Next.js development server:
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
 ```
 
-5. Visit `http://localhost:3000/docs/getting-started` to see your documentation.
+7. Visit `http://localhost:3000/docs/getting-started` to see your documentation.
 
 ## Configuration
 
