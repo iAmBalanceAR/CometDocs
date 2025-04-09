@@ -1,9 +1,9 @@
 ---
-title: User Guides Overview
-position: 0
+title: Overview
+position:1
 ---
 
-# User Guides
+## User Guides
 
 Welcome to the CometDocs user guides. This section contains detailed guides on how to use CometDocs effectively.
 
@@ -14,4 +14,4 @@ Welcome to the CometDocs user guides. This section contains detailed guides on h
 
 ## Getting Help
 
-If you need additional help, please check our [GitHub repository](https://github.com/iAmBalanceAR/CometDocs) or open an issue. 
+If you need additional help, please check our [GitHub repository](https://github.com/iAmBalanceAR/CometDocs) or open an issue.

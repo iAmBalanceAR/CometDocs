@@ -16,11 +16,11 @@ A lightweight, zero-config documentation system for Next.js applications.
 ## Installation
 
 ```bash
-npm install cometdocs
+npm install @iambalance/cometdocs
 # or
-yarn add cometdocs
+yarn add @iambalance/cometdocs
 # or
-pnpm add cometdocs
+pnpm add @iambalance/cometdocs
 ```
 
 ## Quick Start
@@ -49,7 +49,7 @@ Welcome to your documentation!" > docs/en/getting-started.md
 ```tsx
 // pages/docs/[slug].tsx
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { CometDocs } from 'cometdocs';
+import { CometDocs } from '@iambalance/cometdocs';
 
 export default function DocsPage({ slug }) {
   return <CometDocs slug={slug} />;
@@ -145,7 +145,7 @@ docs/
 ### `<CometDocs />` Component
 
 ```tsx
-import { CometDocs } from 'cometdocs';
+import { CometDocs } from '@iambalance/cometdocs';
 
 <CometDocs
   slug="getting-started"
@@ -167,4 +167,4 @@ import { CometDocs } from 'cometdocs';
 
 ## License
 
-MIT © [CometDocs Team](https://github.com/cometdocs) 
+MIT © [CometDocs Team](https://github.com/iAmBalanceAR/CometDocs)

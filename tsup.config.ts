@@ -20,4 +20,7 @@ export default {
   minify: true,
   outDir: 'dist',
   injectStyle: false,
+  noExternal: ['gray-matter', 'mdx-bundler', 'rehype-autolink-headings', 'rehype-code-titles', 'rehype-prism-plus', 'rehype-slug', 'remark-gfm'],
+  target: 'es2018',
+  platform: 'browser',
 }; 

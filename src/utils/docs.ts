@@ -111,6 +111,13 @@ export async function loadDocBySlug(
   // Return mock data based on the slug
   const formattedSlug = slug.replace(/^\/+|\/+$/g, '');
   
+  // In a real implementation, this would make an API call to fetch the document
+  // For example:
+  // const response = await fetch(`/api/docs/${config.content.defaultLocale}/${formattedSlug}`);
+  // if (!response.ok) return null;
+  // return await response.json();
+  
+  // For now, return mock data
   if (formattedSlug === 'getting-started') {
     return {
       metadata: {
@@ -221,86 +228,23 @@ Once you have installed CometDocs, you can:
 3. Customize the appearance to match your brand
       `,
     };
-  } else if (formattedSlug === 'guides/configuration') {
-    return {
-      metadata: {
-        title: 'Configuration Guide',
-        description: 'How to configure CometDocs for your project',
-        slug: formattedSlug,
-        locale: config.content.defaultLocale,
-        path: `${config.advanced.basePath}/${formattedSlug}`,
-      },
-      content: `
-## Configuration Guide
-
-CometDocs can be configured using a \`cometdocs.config.js\` file in your project root.
-
-\`\`\`js
-// cometdocs.config.js
-module.exports = {
-  content: {
-    dir: './docs',
-    defaultLocale: 'en',
-  },
-  theme: {
-    colors: {
-      primary: '#3490dc',
-      secondary: '#718096',
-      accent: '#f6ad55',
-    },
-    layout: 'sidebar',
-    darkMode: 'system',
-  },
-  navigation: {
-    auto: true,
-    items: [
-      {
-        title: 'Getting Started',
-        path: '/docs/getting-started',
-      },
-      // Add more navigation items here
-    ],
-  },
-  advanced: {
-    basePath: '/docs',
-    search: {
-      enabled: true,
-      type: 'local',
-    },
-    codeHighlighting: true,
-  },
-};
-\`\`\`
-
-## Configuration Options
-
-### Content Configuration
-
-- \`dir\`: The directory where your documentation files are stored
-- \`defaultLocale\`: The default locale for your documentation
-
-### Theme Configuration
-
-- \`colors\`: Custom colors for your documentation
-- \`layout\`: The layout style ('sidebar', 'full', etc.)
-- \`darkMode\`: Dark mode configuration ('system', 'light', 'dark', 'toggle')
-
-### Navigation Configuration
-
-- \`auto\`: Whether to automatically generate navigation from your file structure
-- \`items\`: Custom navigation items
-
-### Advanced Configuration
-
-- \`basePath\`: The base path for your documentation
-- \`search\`: Search configuration
-- \`codeHighlighting\`: Whether to enable code highlighting
-      `,
-    };
-  } else {
-    // Return null for unknown slugs
-    return null;
+  } 
+  
+  // Try to match paths with locale prefix
+  // This handles paths like 'en/guides/configuration'
+  const localeMatch = new RegExp(`^(${config.content.defaultLocale})/(.+)$`).exec(formattedSlug);
+  if (localeMatch) {
+    const actualSlug = localeMatch[2];
+    
+    // Recursively call with the actual slug
+    const doc = await loadDocBySlug(actualSlug, config);
+    if (doc) {
+      return doc;
+    }
   }
+  
+  // If we get here, the document wasn't found
+  return null;
 }
 
 /**

@@ -1,121 +1,235 @@
 ---
 title: Configuration
-description: Learn how to configure CometDocs for your project
-date: 2023-07-16
+synopsis: Learn how to configure CometDocs for your project
+date: 2024-03-10
 author: CometDocs Team
+position: 3
 ---
 
-## Configuration
-
-CometDocs is designed to work with minimal configuration, but it offers many options to customize its behavior to suit your needs.
+CometDocs is designed to work with minimal configuration, but offers extensive customization options to match your needs. This guide covers all available configuration options and best practices.
 
 ## Configuration File
 
-The easiest way to configure CometDocs is to create a `cometdocs.config.js` file at the root of your project:
+Create a `cometdocs.config.js` file in your project root:
 
 ```js
 // cometdocs.config.js
+/** @type {import('cometdocs').Config} */
 module.exports = {
+  project: {
+    name: 'Your Project',
+    description: 'Project description',
+    url: 'https://docs.yourproject.com',
+    // Optional: GitHub repository information
+    github: {
+      repo: 'username/repo',
+      branch: 'main',
+      editUrl: true, // Enable "Edit this page" links
+    },
+  },
+
   content: {
     dir: './docs',
     defaultLocale: 'en',
-  },
-  theme: {
-    colors: {
-      primary: '#3490dc',
-      secondary: '#718096',
-      accent: '#f6ad55',
+    locales: ['en', 'es', 'fr'],
+    // Optional: Configure markdown parsing
+    markdown: {
+      remarkPlugins: [],
+      rehypePlugins: [],
+      // Enable GitHub Flavored Markdown
+      gfm: true,
     },
-    layout: 'sidebar',
-    darkMode: 'system',
   },
+
+  theme: {
+    // Use your app's existing theme
+    inherit: true,
+    // Or specify custom colors
+    colors: {
+      primary: {
+        50: '#f0f9ff',
+        100: '#e0f2fe',
+        // ... other shades
+        900: '#0c4a6e',
+      },
+      // ... other color scales
+    },
+    // Dark mode configuration
+    darkMode: 'system', // 'system' | 'dark' | 'light' | 'toggle'
+    // Layout configuration
+    layout: {
+      // Navigation width
+      sidebarWidth: 280,
+      // Maximum content width
+      maxWidth: 1200,
+      // Header height
+      headerHeight: 64,
+    },
+  },
+
   navigation: {
+    // Auto-generate navigation from file structure
     auto: true,
+    // Or specify custom navigation
     items: [
       {
         title: 'Getting Started',
-        path: '/docs/getting-started',
+        items: [
+          {
+            title: 'Introduction',
+            href: '/docs',
+          },
+          {
+            title: 'Installation',
+            href: '/docs/installation',
+          },
+        ],
       },
-      // Add more navigation items here
+      // ... more sections
     ],
   },
-  advanced: {
-    basePath: '/docs',
-    search: {
-      enabled: true,
-      type: 'local',
+
+  search: {
+    enabled: true,
+    type: 'local', // 'local' | 'algolia'
+    // Algolia configuration (if type is 'algolia')
+    algolia: {
+      appId: 'YOUR_APP_ID',
+      apiKey: 'YOUR_SEARCH_API_KEY',
+      indexName: 'YOUR_INDEX_NAME',
     },
-    codeHighlighting: true,
+    // Local search configuration
+    local: {
+      // Index configuration
+      indexing: {
+        // Exclude patterns
+        exclude: ['**/private/**'],
+        // Include patterns
+        include: ['**/*.md', '**/*.mdx'],
+      },
+    },
+  },
+
+  seo: {
+    // Default meta tags
+    defaultTitle: 'Your Documentation',
+    titleTemplate: '%s - Your Project',
+    description: 'Your project documentation',
+    // Open Graph
+    openGraph: {
+      type: 'website',
+      locale: 'en_US',
+      url: 'https://docs.yourproject.com',
+      siteName: 'Your Project Docs',
+    },
+    // Twitter
+    twitter: {
+      handle: '@yourhandle',
+      site: '@yoursite',
+      cardType: 'summary_large_image',
+    },
+  },
+
+  analytics: {
+    // Google Analytics
+    ga: {
+      measurementId: 'G-XXXXXXXXXX',
+    },
+    // Or custom analytics
+    custom: (event) => {
+      // Your custom analytics code
+    },
   },
 };
 ```
 
-## Configuration Options
+## Configuration Options Explained
+
+### Project Configuration
+
+The `project` section defines basic information about your documentation site:
+
+```js
+project: {
+  name: 'Your Project',
+  description: 'Project description',
+  url: 'https://docs.yourproject.com',
+  github: {
+    repo: 'username/repo',
+    branch: 'main',
+    editUrl: true,
+  },
+}
+```
+
+- `name`: Project name displayed in the header
+- `description`: Used in meta tags and SEO
+- `url`: Production URL of your documentation
+- `github`: Configuration for GitHub integration
 
 ### Content Configuration
 
-The `content` section configures where your documentation files are located and the default locale:
+The `content` section controls how your documentation is processed:
 
 ```js
 content: {
-  // The directory where your documentation files are located
   dir: './docs',
-  
-  // The default locale to use when no locale is specified
   defaultLocale: 'en',
+  locales: ['en', 'es', 'fr'],
+  markdown: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+    gfm: true,
+  },
 }
 ```
+
+- `dir`: Root directory for documentation files
+- `defaultLocale`: Default language
+- `locales`: Supported languages
+- `markdown`: Markdown processing options
 
 ### Theme Configuration
 
-The `theme` section allows you to customize the appearance of your documentation site:
+The `theme` section controls the appearance:
 
 ```js
 theme: {
-  // Whether to inherit the theme from your Next.js app
   inherit: true,
-  
-  // Custom colors
   colors: {
-    primary: '#3490dc',
-    secondary: '#718096',
-    accent: '#f6ad55',
+    primary: {
+      50: '#f0f9ff',
+      // ... other shades
+    },
   },
-  
-  // Layout type: 'sidebar', 'full', or 'minimal'
-  layout: 'sidebar',
-  
-  // Dark mode: 'system', 'dark', 'light', or 'toggle'
   darkMode: 'system',
+  layout: {
+    sidebarWidth: 280,
+    maxWidth: 1200,
+    headerHeight: 64,
+  },
 }
 ```
 
+- `inherit`: Use your app's existing theme
+- `colors`: Custom color palette
+- `darkMode`: Dark mode behavior
+- `layout`: Layout dimensions
+
 ### Navigation Configuration
 
-The `navigation` section configures the navigation menu:
+The `navigation` section controls the sidebar navigation:
 
 ```js
 navigation: {
-  // Whether to automatically generate navigation from your documentation files
   auto: true,
-  
-  // Custom navigation items
   items: [
     {
-      title: 'Getting Started',
-      path: '/docs/getting-started',
-    },
-    {
-      title: 'Guides',
-      path: '/docs/guides',
-      children: [
+      title: 'Section',
+      items: [
         {
-          title: 'Installation',
-          path: '/docs/guides/installation',
-        },
-        {
-          title: 'Configuration',
-          path: '/docs/guides/configuration',
+          title: 'Page',
+          href: '/path',
         },
       ],
     },
@@ -123,72 +237,120 @@ navigation: {
 }
 ```
 
-### Advanced Configuration
+- `auto`: Auto-generate from file structure
+- `items`: Manual navigation structure
 
-The `advanced` section provides additional configuration options:
+### Search Configuration
+
+The `search` section configures search functionality:
 
 ```js
-advanced: {
-  // The base path for your documentation
-  basePath: '/docs',
-  
-  // Search configuration
-  search: {
-    // Whether to enable search
-    enabled: true,
-    
-    // Search type: 'local' or 'algolia'
-    type: 'local',
-    
-    // Algolia configuration (only used if type is 'algolia')
-    algolia: {
-      appId: 'YOUR_APP_ID',
-      apiKey: 'YOUR_API_KEY',
-      indexName: 'YOUR_INDEX_NAME',
+search: {
+  enabled: true,
+  type: 'local',
+  algolia: {
+    appId: 'YOUR_APP_ID',
+    apiKey: 'YOUR_SEARCH_API_KEY',
+    indexName: 'YOUR_INDEX_NAME',
+  },
+  local: {
+    indexing: {
+      exclude: ['**/private/**'],
+      include: ['**/*.md', '**/*.mdx'],
     },
   },
-  
-  // Whether to enable code highlighting
-  codeHighlighting: true,
 }
 ```
 
-## Inline Configuration
+- `type`: Search provider ('local' or 'algolia')
+- `algolia`: Algolia search configuration
+- `local`: Local search configuration
 
-You can also configure CometDocs directly in your component:
+### SEO Configuration
 
-```tsx
-import { CometDocs, CometDocsConfig } from 'cometdocs';
+The `seo` section controls meta tags and SEO:
 
-const config: CometDocsConfig = {
+```js
+seo: {
+  defaultTitle: 'Your Documentation',
+  titleTemplate: '%s - Your Project',
+  description: 'Your project documentation',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://docs.yourproject.com',
+    siteName: 'Your Project Docs',
+  },
+  twitter: {
+    handle: '@yourhandle',
+    site: '@yoursite',
+    cardType: 'summary_large_image',
+  },
+}
+```
+
+### Analytics Configuration
+
+The `analytics` section configures analytics:
+
+```js
+analytics: {
+  ga: {
+    measurementId: 'G-XXXXXXXXXX',
+  },
+  custom: (event) => {
+    // Custom analytics code
+  },
+}
+```
+
+## Environment Variables
+
+Some configuration can be set via environment variables:
+
+```env
+# .env.local
+NEXT_PUBLIC_ALGOLIA_APP_ID=your_app_id
+NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY=your_search_api_key
+NEXT_PUBLIC_GA_MEASUREMENT_ID=your_ga_id
+```
+
+## TypeScript Support
+
+For TypeScript users, you can import the configuration type:
+
+```ts
+// cometdocs.config.ts
+import { defineConfig } from 'cometdocs';
+
+export default defineConfig({
   // Your configuration here
-};
-
-export default function DocsPage({ slug }) {
-  return <CometDocs slug={slug} config={config} />;
-}
+});
 ```
 
-This is useful if you want to have different configurations for different parts of your documentation.
+## Best Practices
 
-## Custom Components
+1. **Version Control**:
+   - Commit `cometdocs.config.js` to version control
+   - Use `.env.local` for sensitive values
 
-You can customize the components used by CometDocs by passing them in the `components` prop:
+2. **Performance**:
+   - Enable auto-navigation for small sites
+   - Use manual navigation for large sites
+   - Configure search indexing patterns
 
-```tsx
-import { CometDocs } from 'cometdocs';
-import CustomLayout from '../components/CustomLayout';
+3. **SEO**:
+   - Set comprehensive meta tags
+   - Configure OpenGraph and Twitter cards
+   - Use descriptive titles and descriptions
 
-export default function DocsPage({ slug }) {
-  return (
-    <CometDocs
-      slug={slug}
-      components={{
-        Layout: CustomLayout,
-      }}
-    />
-  );
-}
-```
+4. **Analytics**:
+   - Start with Google Analytics
+   - Add custom analytics as needed
+   - Track important user interactions
 
-This allows you to completely customize the appearance and behavior of your documentation site. 
+## Next Steps
+
+- [Writing Guide](/docs/guides/writing) - Learn how to write effective documentation
+- [Deployment](/docs/guides/deployment) - Deploy your documentation site
+- [Advanced Features](/docs/guides/advanced) - Explore advanced features 

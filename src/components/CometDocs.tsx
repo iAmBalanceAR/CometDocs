@@ -24,21 +24,43 @@ export const CometDocs: React.FC<CometDocsProps> = ({
   const [error, setError] = React.useState<string | null>(null);
   const [metadata, setMetadata] = React.useState<DocMetadata | null>(null);
   const [content, setContent] = React.useState<string>('');
-  const [navigation, setNavigation] = React.useState<NavigationItem[]>([]);
   
   // Get the configuration - memoize to prevent infinite loops
   const config = React.useMemo(() => getCometDocsConfig(customConfig), [customConfig]);
+  
+  // Use navigation directly from config if available
+  const [navigation, setNavigation] = React.useState<NavigationItem[]>(
+    config.navigation.items && config.navigation.items.length > 0 
+      ? config.navigation.items 
+      : []
+  );
   
   // Custom components with defaults - memoize to prevent re-renders
   const components = React.useMemo(() => ({
     Layout: customComponents?.Layout || Layout,
   }), [customComponents]);
   
-  // Format the slug - memoize to prevent re-renders
-  const formattedSlug = React.useMemo(() => 
-    Array.isArray(slug) ? slug.join('/') : (slug || 'index'),
-    [slug]
-  );
+  // Process the slug to handle locale and path
+  const { formattedSlug, locale } = React.useMemo(() => {
+    // Convert to array if it's a string
+    const slugArray = Array.isArray(slug) ? slug : (slug || 'index').split('/');
+    
+    // Check if the first segment is a locale
+    const firstSegment = slugArray[0];
+    const isLocale = firstSegment === config.content.defaultLocale;
+    
+    // Extract locale and path
+    const docLocale = isLocale ? firstSegment : config.content.defaultLocale;
+    const pathSegments = isLocale ? slugArray.slice(1) : slugArray;
+    
+    // Join the path segments
+    const path = pathSegments.join('/') || 'index';
+    
+    return {
+      formattedSlug: path,
+      locale: docLocale
+    };
+  }, [slug, config.content.defaultLocale]);
   
   // Current path for active navigation item
   const currentPath = React.useMemo(() => 
@@ -54,15 +76,37 @@ export const CometDocs: React.FC<CometDocsProps> = ({
       if (!isMounted) return;
       
       try {
+        console.log('Loading navigation with config:', config);
+        console.log('Auto navigation enabled:', config.navigation.auto);
+        console.log('Config items count:', config.navigation.items?.length || 0);
+        
+        // If we have items in the config, use those directly and ONLY those
+        if (config.navigation.items && config.navigation.items.length > 0) {
+          console.log('Using navigation from config ONLY:', config.navigation.items);
+          setNavigation(config.navigation.items);
+          return;
+        }
+        
+        // Otherwise, load navigation from API
         const navItems = await loadNavigation(config);
+        console.log('Navigation loaded from API:', navItems);
         
         if (!isMounted) return;
         
-        setNavigation(navItems);
+        if (navItems && navItems.length > 0) {
+          console.log('Setting navigation with items:', navItems.length);
+          setNavigation(navItems);
+        } else {
+          console.warn('No navigation items returned, using empty navigation');
+          // No fallback - use empty navigation
+          setNavigation([]);
+        }
       } catch (err) {
         if (!isMounted) return;
         
         console.error('Error loading navigation:', err);
+        // No fallback - use empty navigation
+        setNavigation([]);
       }
     }
     
@@ -128,7 +172,10 @@ export const CometDocs: React.FC<CometDocsProps> = ({
   // Show loading state
   if (loading) {
     return (
-      <components.Layout navigation={navigation} currentPath={currentPath}>
+      <components.Layout 
+        navigation={navigation} 
+        currentPath={currentPath}
+      >
         <div className="cometdocs-loading">Loading...</div>
       </components.Layout>
     );
@@ -137,7 +184,10 @@ export const CometDocs: React.FC<CometDocsProps> = ({
   // Show error state
   if (error) {
     return (
-      <components.Layout navigation={navigation} currentPath={currentPath}>
+      <components.Layout 
+        navigation={navigation} 
+        currentPath={currentPath}
+      >
         <div className="cometdocs-error">
           <h2>Error</h2>
           <p>{error}</p>
@@ -205,4 +255,4 @@ function renderMarkdown(markdown: string): string {
   return html;
 }
 
-export default CometDocs; 
+export default CometDocs;

@@ -1,168 +1,228 @@
 ---
 title: Installation
-description: Learn how to install and set up CometDocs in your Next.js project
-date: 2023-07-15
+synopsis: Learn how to install and set up CometDocs in your Next.js project
+date: 2024-03-10
 author: CometDocs Team
+position: 2
 ---
 
-## Installation
+This guide will walk you through the process of installing and setting up CometDocs in your Next.js project. We'll cover everything from basic installation to advanced configuration options.
 
-This guide will walk you through the process of installing and setting up CometDocs in your Next.js project.
+## System Requirements
 
-## Prerequisites
+CometDocs requires:
 
-Before you begin, make sure you have:
+- **Next.js**: Version 14.0.0 or higher
+- **Node.js**: Version 18.17.0 or higher (required by Next.js)
+- **Package Manager**: npm, yarn, or pnpm (we recommend pnpm)
+- **React**: Version 18.0.0 or higher
 
-- A Next.js project (version 13.4.0 or higher)
-- Node.js (version 16 or higher)
-- npm, yarn, or pnpm
+## Creating a New Project
+
+If you're starting from scratch, create a new Next.js project with App Router:
+
+```bash
+# Using pnpm (recommended)
+pnpm create next-app my-docs --typescript --tailwind --app --src-dir
+
+# Using npm
+npx create-next-app my-docs --typescript --tailwind --app --src-dir
+
+# Using yarn
+yarn create next-app my-docs --typescript --tailwind --app --src-dir
+```
 
 ## Installing CometDocs
 
-To install CometDocs, run one of the following commands in your project directory:
+### 1. Install the Package
 
 ```bash
+# Using pnpm (recommended)
+pnpm add cometdocs
+
 # Using npm
 npm install cometdocs
 
 # Using yarn
 yarn add cometdocs
-
-# Using pnpm
-pnpm add cometdocs
 ```
 
-## Setting Up Documentation Files
+### 2. Create Required Directories
 
-CometDocs looks for Markdown or MDX files in the `docs` directory at the root of your project. Create this directory if it doesn't exist:
+Create the documentation directory structure:
 
 ```bash
+# Create docs directory with language subdirectory
 mkdir -p docs/en
+
+# Create guides directory for organized documentation
+mkdir -p docs/en/guides
 ```
 
-Then, create your first documentation file:
+### 3. Set Up the Documentation Route
+
+Create a new directory for the documentation route:
 
 ```bash
-touch docs/en/getting-started.md
+# Create the dynamic route directory
+mkdir -p app/docs/[[...slug]]
 ```
 
-Open the file in your editor and add some content:
-
-```md
----
-title: Getting Started
-description: Learn how to get started with CometDocs
----
-
-# Getting Started
-
-Welcome to CometDocs! This is your first documentation page.
-
-## Introduction
-
-CometDocs is a lightweight, zero-config documentation system for Next.js applications.
-
-## Features
-
-- Markdown and MDX support
-- Automatic navigation
-- Code highlighting
-- Search functionality
-- Customizable themes
-```
-
-## Creating a Documentation Page
-
-Next, you need to create a page in your Next.js app to display your documentation. Create a new file at `pages/docs/[slug].tsx`:
+Create the page component:
 
 ```tsx
-import { GetStaticPaths, GetStaticProps } from 'next';
+// app/docs/[[...slug]]/page.tsx
 import { CometDocs } from 'cometdocs';
 
 interface DocsPageProps {
-  slug: string;
+  params: {
+    slug: string[];
+  };
 }
 
-export default function DocsPage({ slug }: DocsPageProps) {
+export default async function DocsPage({ params }: DocsPageProps) {
+  const slug = params?.slug?.join('/') || 'index';
+  
   return <CometDocs slug={slug} />;
 }
 
-export const getStaticProps: GetStaticProps<DocsPageProps> = async ({ params }) => {
-  const slug = params?.slug as string;
-  
-  return {
-    props: {
-      slug,
-    },
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  // In a real implementation, this would fetch all available docs
-  // For now, we'll just return a few example paths
-  const paths = [
-    { params: { slug: 'getting-started' } },
-  ];
-  
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-};
+// Generate static pages at build time
+export async function generateStaticParams() {
+  // CometDocs will automatically discover all your documentation pages
+  return [];
+}
 ```
 
-## Configuration (Optional)
+### 4. Create Your First Documentation File
 
-You can customize CometDocs by creating a `cometdocs.config.js` file at the root of your project:
+Create an index file for your documentation:
+
+```bash
+touch docs/en/index.md
+```
+
+Add content to the file:
+
+```md
+---
+title: Welcome
+description: Welcome to your documentation
+---
+
+# Welcome to Your Documentation
+
+This is the landing page for your documentation. Start adding content here!
+```
+
+## Optional: Configuration
+
+Create a configuration file to customize CometDocs:
+
+```bash
+touch cometdocs.config.js
+```
+
+Add basic configuration:
 
 ```js
 // cometdocs.config.js
+/** @type {import('cometdocs').Config} */
 module.exports = {
+  // Project information
+  project: {
+    name: 'Your Project',
+    description: 'Your project description',
+    // URL where your documentation will be hosted
+    url: 'https://docs.yourproject.com',
+  },
+
+  // Content configuration
   content: {
+    // Root directory for documentation files
     dir: './docs',
+    // Default language
     defaultLocale: 'en',
+    // Supported languages
+    locales: ['en'],
   },
+
+  // Theme configuration
   theme: {
-    colors: {
-      primary: '#3490dc',
-      secondary: '#718096',
-      accent: '#f6ad55',
-    },
-    layout: 'sidebar',
-    darkMode: 'system',
+    // Use your app's color scheme
+    inherit: true,
+    // Dark mode configuration
+    darkMode: 'system', // 'system' | 'dark' | 'light' | 'toggle'
   },
-  navigation: {
-    auto: true,
-  },
-  advanced: {
-    basePath: '/docs',
-    search: {
-      enabled: true,
-      type: 'local',
-    },
-    codeHighlighting: true,
+
+  // Search configuration
+  search: {
+    enabled: true,
+    type: 'local', // 'local' | 'algolia'
   },
 };
 ```
 
-## Running Your Documentation Site
+## Verifying the Installation
 
-Start your Next.js development server:
-
+1. Start your development server:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
 ```
 
-Then, navigate to `http://localhost:3000/docs/getting-started` in your browser to see your documentation site in action.
+2. Visit `http://localhost:3000/docs` in your browser.
+
+3. You should see your documentation site with:
+   - The welcome page you created
+   - Navigation sidebar
+   - Search functionality
+   - Dark mode toggle
+
+## Common Issues
+
+### Next.js Version Mismatch
+
+If you see errors about incompatible React versions:
+
+```bash
+# Check your Next.js version
+pnpm list next
+
+# Update Next.js if needed
+pnpm up next@latest
+```
+
+### TypeScript Errors
+
+If you encounter TypeScript errors:
+
+1. Update your `tsconfig.json`:
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+2. Run TypeScript check:
+```bash
+pnpm tsc --noEmit
+```
 
 ## Next Steps
 
-Now that you have CometDocs installed and running, you can:
+Now that you have CometDocs installed:
 
-- [Configure CometDocs](/docs/guides/configuration) to customize its behavior
-- [Add more documentation pages](/docs/guides/writing) to build out your documentation
-- [Customize the theme](/docs/guides/theming) to match your brand 
+1. [Configure CometDocs](/docs/guides/configuration) - Customize the behavior and appearance
+2. [Write Documentation](/docs/guides/writing) - Learn best practices for documentation
+3. [Add Search](/docs/guides/search) - Set up and customize search functionality
+4. [Deploy](/docs/guides/deployment) - Deploy your documentation site
+
+## Getting Help
+
+- [Join our Discord](https://discord.gg/cometdocs) for community support
+- [GitHub Issues](https://github.com/cometdocs/cometdocs/issues) for bug reports
+- [API Reference](/docs/api) for detailed API documentation 

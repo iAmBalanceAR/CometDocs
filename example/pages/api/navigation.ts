@@ -1,80 +1,69 @@
-import { NavigationItem } from '../types/config';
-import { CometDocsConfig } from '../types/config';
+import { NextApiRequest, NextApiResponse } from 'next';
+import path from 'path';
+import fs from 'fs/promises';
+import matter from 'gray-matter';
+import { NavigationItem } from '../../../src/types/config';
 
-/**
- * Interface for section metadata from JSON files
- */
-export interface SectionMetadata {
+interface SectionMetadata {
   title: string;
   position?: number;
   collapsed?: boolean;
 }
 
-/**
- * Get navigation structure from the docs directory
- * @param config The CometDocs configuration
- * @param locale The locale to use
- * @returns Navigation structure
- */
-export async function getNavigation(
-  config: CometDocsConfig,
-  locale?: string
-): Promise<NavigationItem[]> {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    // Using dynamic imports for Node.js modules
-    const path = await import('path');
-    const fs = await import('fs/promises');
-    const matter = await import('gray-matter');
-    
-    // Determine the locale to use
-    const docLocale = locale || config.content.defaultLocale;
-    
+    // Get configuration from request or use defaults
+    const { locale = 'en', basePath = '/docs' } = req.query;
+    console.log('API: Building navigation for locale:', locale, 'basePath:', basePath);
+
     // Build the path to the documents directory
     const docsDir = path.join(
       process.cwd(),
-      config.content.dir,
-      docLocale
+      'example/docs/en',
+      locale as string
     );
-    
+    console.log('API: Docs directory:', docsDir);
+
     // Check if the directory exists
     try {
       await fs.access(docsDir);
     } catch (error) {
       // Directory doesn't exist
       console.error(`Docs directory not found: ${docsDir}`);
-      return [];
+      return res.status(404).json({ error: 'Docs directory not found' });
     }
-    
+
     // Get the root directory path for relative path calculations
-    const rootDir = path.join(process.cwd(), config.content.dir);
-    
-    // Recursively scan the directory and build navigation
-    return await buildNavigationTree(docsDir, config.advanced.basePath, rootDir, docLocale, fs, path, matter);
+    const rootDir = path.join(process.cwd(), 'example/docs/en');
+
+    // Build navigation tree
+    const navigation = await buildNavigationTree(
+      docsDir, 
+      basePath as string, 
+      rootDir, 
+      locale as string
+    );
+    console.log('API: Navigation built:', JSON.stringify(navigation, null, 2));
+
+    // Return the navigation structure
+    return res.status(200).json(navigation);
   } catch (error) {
     console.error('Error building navigation:', error);
-    return [];
+    return res.status(500).json({ error: 'Failed to build navigation' });
   }
 }
 
 /**
  * Build a navigation tree from a directory
- * @param dir Directory to scan
- * @param basePath Base path for URLs
- * @param rootDir Root docs directory for relative path calculations
- * @param locale Current locale
- * @param fs File system module
- * @param path Path module
- * @param matter Gray matter module
- * @returns Navigation items
  */
 async function buildNavigationTree(
   dir: string,
   basePath: string,
   rootDir: string,
-  locale: string,
-  fs: any,
-  path: any,
-  matter: any
+  locale: string
 ): Promise<NavigationItem[]> {
   // Get all files and directories
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -83,7 +72,7 @@ async function buildNavigationTree(
   const items: NavigationItem[] = [];
   
   // Process directories first to get section metadata
-  const directories = entries.filter((entry: any) => entry.isDirectory());
+  const directories = entries.filter(entry => entry.isDirectory());
   
   for (const directory of directories) {
     const dirPath = path.join(dir, directory.name);
@@ -107,7 +96,7 @@ async function buildNavigationTree(
     }
     
     // Build children navigation
-    const children = await buildNavigationTree(dirPath, basePath, rootDir, locale, fs, path, matter);
+    const children = await buildNavigationTree(dirPath, basePath, rootDir, locale);
     
     // Add to navigation if there are children or metadata
     if (children.length > 0 || sectionMetadata) {
@@ -123,7 +112,7 @@ async function buildNavigationTree(
   
   // Process markdown files
   const markdownFiles = entries.filter(
-    (entry: any) => !entry.isDirectory() && 
+    entry => !entry.isDirectory() && 
     (entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) &&
     entry.name !== 'index.md' && 
     entry.name !== 'index.mdx'
@@ -132,7 +121,7 @@ async function buildNavigationTree(
   for (const file of markdownFiles) {
     const filePath = path.join(dir, file.name);
     const fileContent = await fs.readFile(filePath, 'utf8');
-    const { data } = matter.default(fileContent);
+    const { data } = matter(fileContent);
     
     const slug = file.name.replace(/\.(md|mdx)$/, '');
     
@@ -152,7 +141,7 @@ async function buildNavigationTree(
   
   // Check for index files
   const indexFiles = entries.filter(
-    (entry: any) => !entry.isDirectory() && 
+    entry => !entry.isDirectory() && 
     (entry.name === 'index.md' || entry.name === 'index.mdx')
   );
   
@@ -160,7 +149,7 @@ async function buildNavigationTree(
     const indexFile = indexFiles[0];
     const filePath = path.join(dir, indexFile.name);
     const fileContent = await fs.readFile(filePath, 'utf8');
-    const { data } = matter.default(fileContent);
+    const { data } = matter(fileContent);
     
     // Calculate the URL path relative to the locale directory
     const relativePath = path.relative(rootDir, dir).replace(/\\/g, '/');
@@ -190,53 +179,4 @@ async function buildNavigationTree(
     }
     return a.title.localeCompare(b.title);
   });
-}
-
-/**
- * Client-side stub for navigation
- * @param config The CometDocsConfig
- * @returns Navigation structure
- */
-export async function loadNavigation(
-  config: CometDocsConfig
-): Promise<NavigationItem[]> {
-  // If auto navigation is disabled, just return the configured items
-  if (!config.navigation.auto) {
-    return config.navigation.items || [];
-  }
-  
-  // If we have items in the config, use those directly
-  if (config.navigation.items && config.navigation.items.length > 0) {
-    console.log('Using navigation items from config:', config.navigation.items);
-    return config.navigation.items;
-  }
-  
-  try {
-    // In a client-side environment, we need to fetch the navigation from an API
-    console.log('Fetching navigation data from API...');
-    
-    // Determine the API endpoint based on the environment
-    const isExample = typeof window !== 'undefined' && window.location.pathname.includes('/docs/');
-    const apiPath = isExample ? '/api/navigation' : '/docs/api/navigation';
-    
-    // Fetch navigation from API endpoint
-    const response = await fetch(
-      `${apiPath}?locale=${config.content.defaultLocale}&basePath=${config.advanced.basePath}`
-    );
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch navigation: ${response.statusText}`);
-    }
-    
-    const navigationData = await response.json();
-    console.log('Navigation data fetched successfully:', navigationData);
-    
-    return navigationData;
-  } catch (error) {
-    console.error('Error fetching navigation:', error);
-    
-    // No fallback - return empty array
-    console.warn('API fetch failed, returning empty navigation');
-    return [];
-  }
 } 

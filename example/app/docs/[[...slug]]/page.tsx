@@ -1,4 +1,7 @@
+import { getDocContent } from '@/app/utils/docs';
 import ClientPage from './client-page';
+import { Metadata } from 'next';
+import { buildNavigation } from '@/app/utils/docs-navigation';
 
 // Custom configuration
 const config = {
@@ -17,27 +20,8 @@ const config = {
     darkMode: 'system',
   },
   navigation: {
-    auto: true,
-    items: [
-      {
-        title: 'Getting Started',
-        path: '/docs/guides/getting-started',
-      },
-      {
-        title: 'Guides',
-        path: '/docs/guides',
-        children: [
-          {
-            title: 'Installation',
-            path: '/docs/guides/installation',
-          },
-          {
-            title: 'Configuration',
-            path: '/docs/guides/configuration',
-          },
-        ],
-      },
-    ],
+    auto: false,
+    items: [],
   },
   advanced: {
     basePath: '/docs',
@@ -68,18 +52,46 @@ function getSlugString(slug?: string[]): string {
   return slug.join('/');
 }
 
+// Define the props type to match what Next.js expects
+type Props = {
+  params: Promise<{ slug?: string[] }>;
+};
+
 export default async function DocsPage({ params }: { params: { slug?: string[] } }) {
-  // Get the slug string safely
-  const slugParams = await params;
-  const slugString = getSlugString(slugParams.slug);
-  
-  return <ClientPage slug={slugString} config={config} />;
+  try {
+    // Get the slug string using the helper function
+    const slugString = getSlugString(params?.slug);
+    
+    // Get the document content
+    const docContent = await getDocContent(slugString);
+    
+    // Build the navigation items (now synchronous)
+    const navigationItems = buildNavigation();
+    
+    return (
+      <ClientPage 
+        slug={slugString} 
+        initialContent={docContent?.content || ''} 
+        initialTitle={docContent?.title || ''} 
+        tableOfContents={docContent?.tableOfContents || []}
+        frontmatter={docContent?.frontmatter}
+        config={{
+          navigation: {
+            items: navigationItems
+          }
+        }} 
+      />
+    );
+  } catch (error) {
+    console.error('Error in DocsPage:', error);
+    return <div>Error loading documentation</div>;
+  }
 }
 
-export async function generateMetadata({ params }: { params: { slug?: string[] } }) {
-  // Get the slug string safely
-  const slugParams = await params;
-  const slugString = getSlugString(slugParams.slug);
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  // Await the params Promise
+  const params = await props.params;
+  const slugString = getSlugString(params.slug);
   
   // Extract the last part of the slug for the title
   const parts = slugString.split('/');

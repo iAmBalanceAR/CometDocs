@@ -73,6 +73,29 @@ export const Layout: React.FC<LayoutProps> = ({
   navigation = [],
   currentPath,
 }) => {
+  console.log('Layout rendering with navigation:', navigation);
+  console.log('Navigation type:', typeof navigation);
+  console.log('Navigation is array:', Array.isArray(navigation));
+  console.log('Navigation length:', navigation.length);
+  
+  // Always use the provided navigation, even if it's empty
+  // This ensures we don't fall back to hard-coded navigation
+  const hasNavigation = Array.isArray(navigation) && navigation.length > 0;
+  console.log('Has navigation items:', hasNavigation, 'Count:', navigation.length);
+  
+  // Debug each navigation item
+  if (hasNavigation) {
+    navigation.forEach((item, index) => {
+      console.log(`Navigation item ${index}:`, item.title, item.path);
+      if (item.children && item.children.length > 0) {
+        console.log(`  Children for ${item.title}:`, item.children.length);
+        item.children.forEach((child, childIndex) => {
+          console.log(`    Child ${childIndex}:`, child.title, child.path);
+        });
+      }
+    });
+  }
+  
   return (
     <div className="cometdocs-container">
       <header className="cometdocs-header">
@@ -85,7 +108,7 @@ export const Layout: React.FC<LayoutProps> = ({
         <aside className="cometdocs-sidebar">
           <nav className="cometdocs-nav">
             <ul className="cometdocs-nav-list">
-              {navigation.length > 0 ? (
+              {hasNavigation ? (
                 navigation.map((item, index) => (
                   <NavigationItemComponent 
                     key={`${item.title}-${index}`} 
@@ -94,28 +117,9 @@ export const Layout: React.FC<LayoutProps> = ({
                   />
                 ))
               ) : (
-                <>
-                  <li className="cometdocs-nav-item">
-                    <a href="/docs/getting-started" className="cometdocs-nav-link">
-                      Getting Started
-                    </a>
-                  </li>
-                  <li className="cometdocs-nav-item">
-                    <span className="cometdocs-nav-group">Guides</span>
-                    <ul className="cometdocs-nav-sublist">
-                      <li className="cometdocs-nav-item">
-                        <a href="/docs/guides/installation" className="cometdocs-nav-link">
-                          Installation
-                        </a>
-                      </li>
-                      <li className="cometdocs-nav-item">
-                        <a href="/docs/guides/configuration" className="cometdocs-nav-link">
-                          Configuration
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                </>
+                <li className="cometdocs-nav-item">
+                  <div className="cometdocs-nav-loading">No navigation available</div>
+                </li>
               )}
             </ul>
           </nav>
