@@ -1,5 +1,9 @@
-import fs from 'fs-extra';
-import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import * as fs from 'fs-extra';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 async function setup() {
   try {
@@ -17,7 +21,7 @@ async function setup() {
     ];
 
     for (const dir of directories) {
-      await fs.ensureDir(path.join(installDir, dir));
+      await fs.ensureDir(join(installDir, dir));
     }
 
     // Create the route page
@@ -29,7 +33,7 @@ export default function DocsPage({ params }: { params: { slug: string[] } }) {
 }`;
 
     await fs.writeFile(
-      path.join(installDir, 'app/docs/[...slug]/page.tsx'),
+      join(installDir, 'app/docs/[...slug]/page.tsx'),
       routePage
     );
 
@@ -53,12 +57,12 @@ Welcome to your documentation! This is a sample page to help you get started wit
 `;
 
     await fs.writeFile(
-      path.join(installDir, 'docs/en/getting-started.md'),
+      join(installDir, 'docs/en/getting-started.md'),
       sampleDoc
     );
 
     // Create or update layout.tsx to import styles
-    const layoutPath = path.join(installDir, 'app/layout.tsx');
+    const layoutPath = join(installDir, 'app/layout.tsx');
     let layoutContent = '';
 
     if (await fs.pathExists(layoutPath)) {
