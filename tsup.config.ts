@@ -1,5 +1,5 @@
 export default {
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/scripts/setup.ts'],
   format: ['esm', 'cjs'],
   dts: true,
   splitting: false,
@@ -22,5 +22,5 @@ export default {
   injectStyle: false,
   noExternal: ['gray-matter', 'mdx-bundler', 'rehype-autolink-headings', 'rehype-code-titles', 'rehype-prism-plus', 'rehype-slug', 'remark-gfm'],
   target: 'es2018',
-  platform: 'browser',
+  platform: 'node',
 }; 
