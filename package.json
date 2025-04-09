@@ -1,6 +1,6 @@
 {
   "name": "@iambalance/cometdocs",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A lightweight, zero-config documentation system for Next.js applications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -26,9 +26,10 @@
   },
   "files": [
     "dist",
+    "src",
+    "example",
     "README.md",
-    "LICENSE",
-    "templates"
+    "LICENSE"
   ],
   "keywords": [
     "nextjs",
