@@ -1,12 +1,12 @@
 {
   "name": "@iambalance/cometdocs",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A lightweight, zero-config documentation system for Next.js applications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "bin": {
-    "create-cometdocs": "./dist/cli.js"
+    "create-cometdocs": "dist/cli.js"
   },
   "sideEffects": false,
   "scripts": {

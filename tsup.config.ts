@@ -9,9 +9,11 @@ export default defineConfig({
   target: 'node18',
   sourcemap: true,
   shims: true,
-  esbuildOptions(options) {
-    options.banner = {
-      js: '#!/usr/bin/env node',
-    };
+  esbuildOptions(options, context) {
+    if (context.format === 'cjs') {
+      options.banner = {
+        js: '#!/usr/bin/env node',
+      };
+    }
   },
 }); 
