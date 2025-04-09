@@ -38,4 +38,7 @@ yarn-error.log*
 
 # Example build
 example/.next
-example/node_modules 
+example/node_modules
+
+# npmrc
+.npmrc 
