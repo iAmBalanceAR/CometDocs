@@ -9,7 +9,9 @@ export default defineConfig({
   target: 'node18',
   sourcemap: true,
   shims: true,
-  banner: {
-    js: "#!/usr/bin/env node",
-  }
+  esbuildOptions(options) {
+    options.banner = {
+      js: '#!/usr/bin/env node',
+    };
+  },
 }); 
